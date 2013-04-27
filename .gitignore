@@ -6,5 +6,7 @@ dungeon-crawler.ipr
 dungeon-crawler.iws
 liblwjgl64.so
 libopenal64.so
+OpenAL64.dll
+lwjgl64.dll
 out/
 
