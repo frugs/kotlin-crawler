@@ -1,4 +1,4 @@
 dungeon-crawler
 ===============
 
-game
+use 'gradle run' to run the game
