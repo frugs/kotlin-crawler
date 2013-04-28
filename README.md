@@ -7,8 +7,8 @@ dungeon-crawler
 * `gradlew tasks` to display other tasks
 
 
-#### In-Game Controls 
-* *W*, *A*, *S*, *D* to move camera
-* *E* to stop moving
+#### In-Game Controls
+* *UP*, *LEFT*, *DOWN*, *RIGHT* to move camera
+* *S* to stop moving
 * *Right-click* to move to that location
 
