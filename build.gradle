@@ -15,6 +15,14 @@ dependencies {
 
 mainClassName = 'com.frugs.dungeoncrawler.DungeonCrawler'
 
+idea.project.ipr {
+    withXml { provider ->
+        def vcsMappings = provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping
+	vcsMappings.@vcs = 'Git'
+	vcsMappings.@directory = file('.')
+    }
+}
+
 task listJars << {
     configurations.compile.each { File file -> println file.name }
 }
