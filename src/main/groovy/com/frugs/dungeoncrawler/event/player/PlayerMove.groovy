@@ -1,9 +1,9 @@
-package com.frugs.event.player
+package com.frugs.dungeoncrawler.event.player
 
 import com.frugs.dungeoncrawler.game.Player
-import com.frugs.event.Event
-import com.frugs.event.Interruptable
-import com.frugs.event.Interrupter
+import com.frugs.dungeoncrawler.event.Event
+import com.frugs.dungeoncrawler.event.Interruptable
+import com.frugs.dungeoncrawler.event.Interrupter
 import com.jme3.math.Vector3f
 import groovy.transform.CompileStatic
 

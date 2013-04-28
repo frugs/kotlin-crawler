@@ -1,4 +1,4 @@
-package com.frugs.event
+package com.frugs.dungeoncrawler.event
 
 
 public interface Event {

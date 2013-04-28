@@ -1,7 +1,7 @@
-package com.frugs.event.player
+package com.frugs.dungeoncrawler.event.player
 
 import com.frugs.dungeoncrawler.game.Player
-import com.frugs.event.Interrupter
+import com.frugs.dungeoncrawler.event.Interrupter
 import groovy.transform.CompileStatic
 
 @CompileStatic

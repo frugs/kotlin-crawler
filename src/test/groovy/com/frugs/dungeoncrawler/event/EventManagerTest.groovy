@@ -1,4 +1,4 @@
-package com.frugs.event
+package com.frugs.dungeoncrawler.event
 
 import com.google.inject.Guice
 import com.google.inject.Injector
