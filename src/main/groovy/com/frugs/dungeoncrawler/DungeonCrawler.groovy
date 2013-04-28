@@ -8,6 +8,7 @@ import com.frugs.event.EventManager
 import com.google.inject.Guice
 import com.google.inject.Inject
 import com.google.inject.Injector
+import com.jme3.app.FlyCamAppState
 import com.jme3.app.SimpleApplication
 import com.jme3.input.KeyInput
 import com.jme3.input.MouseInput
@@ -17,6 +18,10 @@ import com.jme3.material.Material
 import com.jme3.system.AppSettings
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+
+import java.awt.DisplayMode
+import java.awt.GraphicsDevice
+import java.awt.GraphicsEnvironment
 
 import static groovy.transform.TypeCheckingMode.SKIP
 
@@ -41,7 +46,13 @@ class DungeonCrawler extends SimpleApplication {
     private DungeonCrawler(RtsCamera rtsCamera, InGame inGame, EventManager eventManager) {
         AppSettings appSettings = new AppSettings(true)
         appSettings.frameRate = 60
-        appSettings.setResolution(1024, 768)
+
+        GraphicsDevice device = GraphicsEnvironment.localGraphicsEnvironment.defaultScreenDevice
+        DisplayMode displayMode = device.displayModes[0] // note: there are usually several, let's pick the first
+        appSettings.setResolution(displayMode.width, displayMode.height)
+        appSettings.frequency = displayMode.refreshRate
+        appSettings.depthBits = displayMode.bitDepth
+        appSettings.fullscreen = device.fullScreenSupported
 
         showSettings = false
         settings = appSettings
@@ -67,19 +78,19 @@ class DungeonCrawler extends SimpleApplication {
     void simpleUpdate(float tpf) {}
 
     private void initAppStates() {
+        stateManager.detach(stateManager.getState(FlyCamAppState))
         stateManager.attach(rtsCamera)
         stateManager.attach(inGame)
         stateManager.attach(eventManager)
-        flyCam.enabled = false
     }
 
     private void initKeyBindings() {
         Map keyBindings = [
-            (CameraAction.MOVE_UP.id): KeyInput.KEY_W,
-            (CameraAction.MOVE_LEFT.id): KeyInput.KEY_A,
-            (CameraAction.MOVE_DOWN.id): KeyInput.KEY_S,
-            (CameraAction.MOVE_RIGHT.id): KeyInput.KEY_D,
-            (PlayerAction.STOP.id): KeyInput.KEY_E
+            (CameraAction.MOVE_UP.id): KeyInput.KEY_UP,
+            (CameraAction.MOVE_LEFT.id): KeyInput.KEY_LEFT,
+            (CameraAction.MOVE_DOWN.id): KeyInput.KEY_DOWN,
+            (CameraAction.MOVE_RIGHT.id): KeyInput.KEY_RIGHT,
+            (PlayerAction.STOP.id): KeyInput.KEY_S
         ]
 
         Map mouseBindings = [

@@ -9,6 +9,7 @@ import com.jme3.app.SimpleApplication
 import com.jme3.app.state.AbstractAppState
 import com.jme3.app.state.AppStateManager
 import com.jme3.input.InputManager
+import com.jme3.math.Vector3f
 import com.jme3.renderer.Camera
 import com.jme3.scene.Node
 import groovy.transform.CompileStatic
@@ -22,6 +23,8 @@ class RtsCamera extends AbstractAppState {
 
     private RtsCameraNode rtsCameraNode
     private CameraActionListener cameraActionListener
+
+    private int screenEdgeOffset = 10
 
     @Override
     void initialize(AppStateManager stateManager, Application app) {
@@ -44,6 +47,25 @@ class RtsCamera extends AbstractAppState {
         } else {
             rootNode.detachChild(rtsCameraNode)
             inputManager.removeListener(cameraActionListener)
+        }
+    }
+
+    @Override
+    void update(float tpf) {
+        super.update(tpf)
+        def adjustedSpeed = Vector3f.UNIT_XYZ.mult(tpf * 60).mult(rtsCameraNode.speed)
+
+        if (inputManager.cursorPosition.y + screenEdgeOffset > cam.height) {
+            rtsCameraNode.move(Vector3f.UNIT_Z.mult(adjustedSpeed))
+        }
+        if (inputManager.cursorPosition.y - screenEdgeOffset < 0) {
+            rtsCameraNode.move(Vector3f.UNIT_Z.mult(adjustedSpeed).negate())
+        }
+        if (inputManager.cursorPosition.x + screenEdgeOffset > cam.width) {
+            rtsCameraNode.move(Vector3f.UNIT_X.mult(adjustedSpeed).negate())
+        }
+        if (inputManager.cursorPosition.x - screenEdgeOffset < 0) {
+            rtsCameraNode.move(Vector3f.UNIT_X.mult(adjustedSpeed))
         }
     }
 }

@@ -15,7 +15,7 @@ import groovy.transform.CompileStatic
 class Player extends Geometry {
 
     Vector3f facingDirection
-    float speed = 3.0
+    float speed = 8.0
 
     Player(Material mat) {
         this(mat, Vector3f.UNIT_Z)

@@ -23,7 +23,6 @@ class InGame extends AbstractAppState {
     InputManager inputManager
     PlayerControl playerControl
     Camera cam
-    int frameNo = 0
 
     InGame() {
         super(enabled: false)
@@ -52,20 +51,5 @@ class InGame extends AbstractAppState {
             rootNode.detachChild(player)
             inputManager.removeListener(playerControl)
         }
-    }
-
-    @Override
-    void update(float tpf) {
-        super.update(tpf)
-
-//        if (frameNo == 0) {
-//            eventManager.queueEvent(new PlayerMove(Vector3f.UNIT_X.mult(10.0f), player))
-//        }
-//
-//        if (frameNo == 600) {
-//            eventManager.queueEvent(new PlayerMove(Vector3f.ZERO, player))
-//        }
-//
-//        frameNo++
     }
 }
