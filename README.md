@@ -8,7 +8,8 @@ dungeon-crawler
 
 
 #### In-Game Controls
-* *UP*, *LEFT*, *DOWN*, *RIGHT* to move camera
+* Scroll camera by moving mouse to edge of screen
+* *UP*, *LEFT*, *DOWN*, *RIGHT* to move camera using keyboard
 * *S* to stop moving
 * *Right-click* to move to that location
 
