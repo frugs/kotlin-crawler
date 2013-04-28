@@ -1,9 +1,9 @@
 package com.frugs.dungeoncrawler.control
 
 import com.frugs.dungeoncrawler.game.Player
-import com.frugs.event.EventManager
-import com.frugs.event.player.PlayerMove
-import com.frugs.event.player.PlayerStop
+import com.frugs.dungeoncrawler.event.EventManager
+import com.frugs.dungeoncrawler.event.player.PlayerMove
+import com.frugs.dungeoncrawler.event.player.PlayerStop
 import com.jme3.input.InputManager
 import com.jme3.input.controls.AnalogListener
 import com.jme3.math.Plane

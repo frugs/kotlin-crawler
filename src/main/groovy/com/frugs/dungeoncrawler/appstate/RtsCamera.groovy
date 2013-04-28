@@ -33,18 +33,18 @@ class RtsCamera extends AbstractAppState {
         cam = simpleApp.camera
         inputManager = simpleApp.inputManager
         rootNode = simpleApp.rootNode
-        enabled = true
+        rtsCameraNode = new RtsCameraNode(cam)
+        cameraActionListener = new CameraActionListener(rtsCameraNode)
+        enabled = false
     }
 
     @Override
     void setEnabled(boolean enabled) {
         super.setEnabled(enabled)
         if (enabled) {
-            rtsCameraNode = rtsCameraNode ?: new RtsCameraNode(cam)
-            cameraActionListener = cameraActionListener ?: new CameraActionListener(rtsCameraNode)
             rootNode.attachChild(rtsCameraNode)
             inputManager.addListener(cameraActionListener, CameraAction.ids)
-        } else {
+        } else if (initialized) {
             rootNode.detachChild(rtsCameraNode)
             inputManager.removeListener(cameraActionListener)
         }

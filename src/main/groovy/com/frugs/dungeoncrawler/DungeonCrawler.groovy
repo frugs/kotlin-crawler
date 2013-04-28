@@ -4,7 +4,7 @@ import com.frugs.dungeoncrawler.appstate.InGame
 import com.frugs.dungeoncrawler.appstate.RtsCamera
 import com.frugs.dungeoncrawler.control.CameraActionListener.CameraAction
 import com.frugs.dungeoncrawler.control.PlayerControl.PlayerAction
-import com.frugs.event.EventManager
+import com.frugs.dungeoncrawler.event.EventManager
 import com.google.inject.Guice
 import com.google.inject.Inject
 import com.google.inject.Injector
@@ -15,13 +15,13 @@ import com.jme3.input.MouseInput
 import com.jme3.input.controls.KeyTrigger
 import com.jme3.input.controls.MouseButtonTrigger
 import com.jme3.material.Material
+import com.jme3.niftygui.NiftyJmeDisplay
 import com.jme3.system.AppSettings
+import de.lessvoid.nifty.Nifty
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 
-import java.awt.DisplayMode
-import java.awt.GraphicsDevice
-import java.awt.GraphicsEnvironment
+import java.awt.*
 
 import static groovy.transform.TypeCheckingMode.SKIP
 
@@ -33,6 +33,7 @@ class DungeonCrawler extends SimpleApplication {
     InGame inGame
     EventManager eventManager
     Map<String, Material> materials
+    boolean firstFrame = true
 
     @TypeChecked(SKIP)
     public static void main(String[] args) {
@@ -66,6 +67,13 @@ class DungeonCrawler extends SimpleApplication {
         initAssets()
         initKeyBindings()
         initAppStates()
+
+//        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort)
+//        Nifty nifty = niftyDisplay.getNifty();
+//        /** Read your XML and initialize your custom ScreenController */
+//        nifty.fromXml("Interface/MainMenu.xml", "start")
+//        // nifty.fromXml("Interface/helloworld.xml", "start", new MySettingsScreen(data));
+//        guiViewPort.addProcessor(niftyDisplay)
     }
 
     private void initAssets() {
@@ -75,7 +83,13 @@ class DungeonCrawler extends SimpleApplication {
     }
 
     @Override
-    void simpleUpdate(float tpf) {}
+    void simpleUpdate(float tpf) {
+        if (firstFrame) {
+            rtsCamera.enabled = true
+            inGame.enabled = true
+            firstFrame = false
+        }
+    }
 
     private void initAppStates() {
         stateManager.detach(stateManager.getState(FlyCamAppState))

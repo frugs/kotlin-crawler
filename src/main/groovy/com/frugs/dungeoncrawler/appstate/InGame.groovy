@@ -4,7 +4,7 @@ import com.frugs.dungeoncrawler.DungeonCrawler
 import com.frugs.dungeoncrawler.control.PlayerControl
 import com.frugs.dungeoncrawler.control.PlayerControl.PlayerAction
 import com.frugs.dungeoncrawler.game.Player
-import com.frugs.event.EventManager
+import com.frugs.dungeoncrawler.event.EventManager
 import com.jme3.app.Application
 import com.jme3.app.SimpleApplication
 import com.jme3.app.state.AbstractAppState
@@ -38,7 +38,7 @@ class InGame extends AbstractAppState {
         inputManager = simpleApp.inputManager
         cam = simpleApp.camera
         playerControl = new PlayerControl(player, eventManager, cam, inputManager)
-        enabled = true
+        enabled = false
     }
 
     @Override
@@ -47,7 +47,7 @@ class InGame extends AbstractAppState {
         if (enabled) {
             rootNode.attachChild(player)
             inputManager.addListener(playerControl, PlayerAction.ids)
-        } else {
+        } else if (initialized) {
             rootNode.detachChild(player)
             inputManager.removeListener(playerControl)
         }
