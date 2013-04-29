@@ -1,11 +1,11 @@
 package com.frugs.dungeoncrawler
 
 import com.frugs.dungeoncrawler.appstate.InGame
+import com.frugs.dungeoncrawler.appstate.MainMenuController
 import com.frugs.dungeoncrawler.appstate.RtsCamera
 import com.frugs.dungeoncrawler.control.CameraActionListener.CameraAction
 import com.frugs.dungeoncrawler.control.PlayerControl.PlayerAction
 import com.frugs.dungeoncrawler.event.EventManager
-import com.frugs.dungeoncrawler.appstate.MainMenuController
 import com.google.inject.Guice
 import com.google.inject.Inject
 import com.google.inject.Injector
@@ -33,7 +33,6 @@ class DungeonCrawler extends SimpleApplication {
     EventManager eventManager
     MainMenuController mainMenuController
     Map<String, Material> materials
-    boolean firstFrame = true
 
     @TypeChecked(SKIP)
     public static void main(String[] args) {
@@ -78,11 +77,6 @@ class DungeonCrawler extends SimpleApplication {
 
     @Override
     void simpleUpdate(float tpf) {
-        if (firstFrame) {
-//            rtsCamera.enabled = true
-//            inGame.enabled = true
-//            firstFrame = false
-        }
     }
 
     private void initAppStates() {
