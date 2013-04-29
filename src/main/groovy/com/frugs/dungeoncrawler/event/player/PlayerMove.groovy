@@ -4,6 +4,9 @@ import com.frugs.dungeoncrawler.game.Player
 import com.frugs.dungeoncrawler.event.Event
 import com.frugs.dungeoncrawler.event.Interruptable
 import com.frugs.dungeoncrawler.event.Interrupter
+import com.frugs.dungeoncrawler.util.Radians
+import com.jme3.math.FastMath
+import com.jme3.math.Quaternion
 import com.jme3.math.Vector3f
 import groovy.transform.CompileStatic
 
@@ -31,6 +34,15 @@ class PlayerMove implements Interruptable, Interrupter {
     @Override
     void process(float tpf) {
         Vector3f normalisedDirection = destination.subtract(player.localTranslation).normalize()
+
+        float angleToDestination = normalisedDirection.angleBetween(player.facingDirection) - FastMath.PI
+        float angularVelocity = angleToDestination > 0 ? player.angularSpeed : -player.angularSpeed
+
+        float rotationAngle = Radians.largerAbsolute(angleToDestination, angularVelocity)
+        Vector3f rotationVector = normalisedDirection.cross(player.facingDirection)
+        Quaternion rotation = Quaternion.ZERO.fromAngleNormalAxis(rotationAngle, rotationVector)
+
+        player.rotate(rotation)
         player.move(normalisedDirection.mult(player.speed).mult(tpf))
     }
 

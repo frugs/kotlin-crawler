@@ -1,6 +1,5 @@
 package com.frugs.dungeoncrawler.appstate
 
-import com.frugs.dungeoncrawler.gui.MainMenuController
 import com.jme3.app.Application
 import com.jme3.app.state.AbstractAppState
 import com.jme3.app.state.AppStateManager
