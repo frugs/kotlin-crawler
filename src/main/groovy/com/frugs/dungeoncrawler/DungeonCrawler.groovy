@@ -5,6 +5,7 @@ import com.frugs.dungeoncrawler.appstate.RtsCamera
 import com.frugs.dungeoncrawler.control.CameraActionListener.CameraAction
 import com.frugs.dungeoncrawler.control.PlayerControl.PlayerAction
 import com.frugs.dungeoncrawler.event.EventManager
+import com.frugs.dungeoncrawler.appstate.MainMenuController
 import com.google.inject.Guice
 import com.google.inject.Inject
 import com.google.inject.Injector
@@ -15,9 +16,7 @@ import com.jme3.input.MouseInput
 import com.jme3.input.controls.KeyTrigger
 import com.jme3.input.controls.MouseButtonTrigger
 import com.jme3.material.Material
-import com.jme3.niftygui.NiftyJmeDisplay
 import com.jme3.system.AppSettings
-import de.lessvoid.nifty.Nifty
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 
@@ -32,6 +31,7 @@ class DungeonCrawler extends SimpleApplication {
     RtsCamera rtsCamera
     InGame inGame
     EventManager eventManager
+    MainMenuController mainMenuController
     Map<String, Material> materials
     boolean firstFrame = true
 
@@ -44,7 +44,7 @@ class DungeonCrawler extends SimpleApplication {
     }
 
     @Inject
-    private DungeonCrawler(RtsCamera rtsCamera, InGame inGame, EventManager eventManager) {
+    private DungeonCrawler(RtsCamera rtsCamera, InGame inGame, MainMenuController mainMenuController, EventManager eventManager) {
         AppSettings appSettings = new AppSettings(true)
         appSettings.frameRate = 60
 
@@ -59,6 +59,7 @@ class DungeonCrawler extends SimpleApplication {
         settings = appSettings
         this.rtsCamera = rtsCamera
         this.inGame = inGame
+        this.mainMenuController = mainMenuController
         this.eventManager = eventManager
     }
 
@@ -67,13 +68,6 @@ class DungeonCrawler extends SimpleApplication {
         initAssets()
         initKeyBindings()
         initAppStates()
-
-//        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort)
-//        Nifty nifty = niftyDisplay.getNifty();
-//        /** Read your XML and initialize your custom ScreenController */
-//        nifty.fromXml("Interface/MainMenu.xml", "start")
-//        // nifty.fromXml("Interface/helloworld.xml", "start", new MySettingsScreen(data));
-//        guiViewPort.addProcessor(niftyDisplay)
     }
 
     private void initAssets() {
@@ -85,9 +79,9 @@ class DungeonCrawler extends SimpleApplication {
     @Override
     void simpleUpdate(float tpf) {
         if (firstFrame) {
-            rtsCamera.enabled = true
-            inGame.enabled = true
-            firstFrame = false
+//            rtsCamera.enabled = true
+//            inGame.enabled = true
+//            firstFrame = false
         }
     }
 
@@ -96,6 +90,7 @@ class DungeonCrawler extends SimpleApplication {
         stateManager.attach(rtsCamera)
         stateManager.attach(inGame)
         stateManager.attach(eventManager)
+        stateManager.attach(mainMenuController)
     }
 
     private void initKeyBindings() {
