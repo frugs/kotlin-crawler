@@ -15,11 +15,16 @@ dependencies {
 
 mainClassName = 'com.frugs.dungeoncrawler.DungeonCrawler'
 
-idea.project.ipr {
-    withXml { provider ->
-        def vcsMappings = provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping
-	vcsMappings.@vcs = 'Git'
-	vcsMappings.@directory = file('.')
+idea.project {
+    jdkName = '1.7'
+    languageLevel = '1.7'
+
+    ipr {
+        withXml { provider ->
+            def vcsMappings = provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping
+            vcsMappings.@vcs = 'Git'
+            vcsMappings.@directory = file('.')
+        }
     }
 }
 
