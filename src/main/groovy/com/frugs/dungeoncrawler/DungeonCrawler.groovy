@@ -24,9 +24,10 @@ import java.awt.*
 
 import static groovy.transform.TypeCheckingMode.SKIP
 
-@Singleton
 @CompileStatic
 class DungeonCrawler extends SimpleApplication {
+
+    static private Injector injector = Guice.createInjector()
 
     RtsCamera rtsCamera
     InGame inGame
@@ -36,14 +37,11 @@ class DungeonCrawler extends SimpleApplication {
 
     @TypeChecked(SKIP)
     public static void main(String[] args) {
-        Injector injector = Guice.createInjector()
-
-        DungeonCrawler app = injector.getInstance(DungeonCrawler)
+        DungeonCrawler app = new DungeonCrawler()
         app.start() // start the game
     }
 
-    @Inject
-    private DungeonCrawler(RtsCamera rtsCamera, InGame inGame, MainMenuController mainMenuController, EventManager eventManager) {
+    DungeonCrawler() {
         AppSettings appSettings = new AppSettings(true)
         appSettings.frameRate = 60
 
@@ -55,10 +53,10 @@ class DungeonCrawler extends SimpleApplication {
 
         showSettings = false
         settings = appSettings
-        this.rtsCamera = rtsCamera
-        this.inGame = inGame
-        this.mainMenuController = mainMenuController
-        this.eventManager = eventManager
+        this.rtsCamera = injector.getInstance(RtsCamera)
+        this.inGame = injector.getInstance(InGame)
+        this.mainMenuController = injector.getInstance(MainMenuController)
+        this.eventManager = injector.getInstance(EventManager)
     }
 
     @Override

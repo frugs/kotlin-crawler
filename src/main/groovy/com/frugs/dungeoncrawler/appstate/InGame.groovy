@@ -10,7 +10,6 @@ import com.jme3.app.SimpleApplication
 import com.jme3.app.state.AbstractAppState
 import com.jme3.app.state.AppStateManager
 import com.jme3.input.InputManager
-import com.jme3.renderer.Camera
 import com.jme3.scene.Node
 import groovy.transform.CompileStatic
 
@@ -19,10 +18,8 @@ class InGame extends AbstractAppState {
 
     Player player
     Node rootNode
-    EventManager eventManager
     InputManager inputManager
     PlayerControl playerControl
-    Camera cam
 
     InGame() {
         super(enabled: false)
@@ -34,10 +31,8 @@ class InGame extends AbstractAppState {
         SimpleApplication simpleApp = app as DungeonCrawler
         player = new Player(simpleApp.materials.unshaded)
         rootNode = simpleApp.rootNode
-        eventManager = simpleApp.eventManager
         inputManager = simpleApp.inputManager
-        cam = simpleApp.camera
-        playerControl = new PlayerControl(player, eventManager, cam, inputManager)
+        playerControl = new PlayerControl(player, simpleApp.eventManager, simpleApp.camera, inputManager)
         enabled = false
     }
 
