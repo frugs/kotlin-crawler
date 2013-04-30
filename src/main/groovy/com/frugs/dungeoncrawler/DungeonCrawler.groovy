@@ -48,10 +48,9 @@ class DungeonCrawler extends SimpleApplication {
         appSettings.frameRate = 60
 
         GraphicsDevice device = GraphicsEnvironment.localGraphicsEnvironment.defaultScreenDevice
-        DisplayMode displayMode = device.displayModes[0] // note: there are usually several, let's pick the first
+        DisplayMode displayMode = device.displayModes.max { DisplayMode displayMode -> displayMode.width } // pick the biggest one, I guess
         appSettings.setResolution(displayMode.width, displayMode.height)
         appSettings.frequency = displayMode.refreshRate
-        appSettings.depthBits = displayMode.bitDepth
         appSettings.fullscreen = device.fullScreenSupported
 
         showSettings = false
