@@ -14,6 +14,7 @@ import groovy.transform.CompileStatic
 class PlayerMove implements Interruptable, Interrupter {
 
     private static final Vector3f MARGIN = Vector3f.UNIT_XYZ.mult(0.1f)
+    private boolean endOfChain = true
     final long timeIssued
 
     Vector3f destination
@@ -34,21 +35,27 @@ class PlayerMove implements Interruptable, Interrupter {
     @Override
     void process(float tpf) {
         Vector3f normalisedDirection = destination.subtract(player.localTranslation).normalize()
+        float angleToDestination = normalisedDirection.angleBetween(player.facingDirection)
 
-        float angleToDestination = normalisedDirection.angleBetween(player.facingDirection) - FastMath.PI
-        float angularVelocity = angleToDestination > 0 ? player.angularSpeed : -player.angularSpeed
+        if (angleToDestination > 0.01f) {
+            def refVector = normalisedDirection.cross(Vector3f.UNIT_Y)
+            def refAngle = normalisedDirection.angleBetween(refVector)
+            float rotationAngle = Radians.smallerAbsolute(angleToDestination % FastMath.PI, player.angularSpeed)
+            def angularVelocity = refAngle > angleToDestination ? rotationAngle : FastMath.TWO_PI - rotationAngle
+            Quaternion rotation = Quaternion.ZERO.fromAngleNormalAxis(angularVelocity, Vector3f.UNIT_Y)
+            player.rotate(rotation)
+            endOfChain = false
+        }
 
-        float rotationAngle = Radians.largerAbsolute(angleToDestination, angularVelocity)
-        Vector3f rotationVector = normalisedDirection.cross(player.facingDirection)
-        Quaternion rotation = Quaternion.ZERO.fromAngleNormalAxis(rotationAngle, rotationVector)
-
-        player.rotate(rotation)
-        player.move(normalisedDirection.mult(player.speed).mult(tpf))
+        if (!reachedDestination()) {
+            player.move(normalisedDirection.mult(player.speed).mult(tpf))
+            endOfChain = false
+        }
     }
 
     @Override
     Event getChain() {
-        if(reachedDestination()) {
+        if(endOfChain) {
             new PlayerStop(System.currentTimeMillis(), player)
         } else {
             new PlayerMove(destination, player, timeIssued)

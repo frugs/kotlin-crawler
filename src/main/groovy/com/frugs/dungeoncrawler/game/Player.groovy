@@ -15,7 +15,7 @@ import groovy.transform.CompileStatic
 class Player extends Geometry {
 
     final float speed = 8.0f
-    final float angularSpeed = FastMath.HALF_PI
+    final float angularSpeed = FastMath.DEG_TO_RAD * 3.0f
 
     Vector3f facingDirection
 
@@ -32,7 +32,8 @@ class Player extends Geometry {
     }
 
     @Override
-    synchronized Spatial rotate(float xAngle, float yAngle, float zAngle) {
+    Spatial rotate(float xAngle, float yAngle, float zAngle) {
+        assert xAngle == 0.0f && zAngle == 0.0f //rotations in other dimensions not supported yet
         Quaternion rotation = Quaternion.ZERO.fromAngles(xAngle, yAngle, zAngle)
         rotate(rotation)
     }

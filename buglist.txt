@@ -1,0 +1,6 @@
+### GAME ISSUES
+    -- Player occasionally spins 180 at the end of a PlayerMove chain, probably caused by travelling past the destination
+    -- Occasional glitches when machine is under load and tpf < 1/60
+
+### BUILD ISSUES
+    --
