@@ -13,6 +13,14 @@ dependencies {
     testCompile 'junit:junit:4.11'
 }
 
+sourceSets {
+	main {
+		groovy {
+			srcDirs = ['assets', 'src/main/groovy']
+		}
+	}
+}
+
 mainClassName = 'com.frugs.dungeoncrawler.DungeonCrawler'
 
 idea.project {
