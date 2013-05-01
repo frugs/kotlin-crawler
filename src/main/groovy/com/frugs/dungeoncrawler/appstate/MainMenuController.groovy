@@ -1,5 +1,6 @@
 package com.frugs.dungeoncrawler.appstate
 
+import com.google.inject.Inject
 import com.jme3.app.Application
 import com.jme3.app.state.AbstractAppState
 import com.jme3.app.state.AppStateManager
@@ -38,7 +39,17 @@ class MainMenuController extends AbstractAppState implements ScreenController{
         enabled = false
     }
 
+    @Inject
+    MainMenuController(AppStateManager stateManager, AssetManager assetManager, InputManager inputManager, AudioRenderer audioRenderer, ViewPort guiViewPort) {
+        this.stateManager = stateManager
+        this.assetManager = assetManager
+        this.inputManager = inputManager
+        this.audioRenderer = audioRenderer
+        this.guiViewPort = guiViewPort
+    }
+
     @Override
+
     void onStartScreen() {}
 
     @Override
@@ -47,11 +58,6 @@ class MainMenuController extends AbstractAppState implements ScreenController{
     @Override
     void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app)
-        this.stateManager = stateManager
-        assetManager = app.assetManager
-        inputManager = app.inputManager
-        audioRenderer = app.audioRenderer
-        guiViewPort = app.guiViewPort
         enabled = true
     }
 

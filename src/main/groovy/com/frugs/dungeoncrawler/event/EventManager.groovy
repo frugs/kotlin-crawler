@@ -9,12 +9,10 @@ import groovy.transform.CompileStatic
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-@Singleton
 @CompileStatic
 class EventManager extends AbstractAppState{
 
-    @Inject
-    private EventManager() {}
+    EventManager() {}
 
     private List<Event> eventQueue = []
     private List<Event> nextEvents = []
