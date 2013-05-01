@@ -31,11 +31,6 @@ class EventManagerTest {
         void process(float tpf) {
             counter++
         }
-
-        @Override
-        Event getChain() {
-            new TestInterruptable(timeIssued)
-        }
     }
 
     class TestInterrupter implements Interrupter {
@@ -62,28 +57,6 @@ class EventManagerTest {
         @Override
         void process(float tpf) {
             counter += timeIssued
-        }
-
-        @Override
-        Event getChain() {
-            new TestSelfInterruptable(timeIssued)
-        }
-    }
-
-    class TestChain implements Chainable {
-
-        @Override
-        Event getChain() {
-            if (counter < 5) {
-                new TestChain()
-            } else {
-                [process: {}] as Event
-            }
-        }
-
-        @Override
-        void process(float tpf) {
-            counter++
         }
     }
 
@@ -121,17 +94,5 @@ class EventManagerTest {
 
         eventManager.update(1)
         assert counter == 3
-    }
-
-    @Test
-    void update_shouldProcessEventChains() {
-        eventManager.queueEvent(new TestChain())
-        eventManager.update(1)
-        counter = 0
-
-        (1..10).each {
-            eventManager.update(1)
-        }
-        assert counter == 5
     }
 }

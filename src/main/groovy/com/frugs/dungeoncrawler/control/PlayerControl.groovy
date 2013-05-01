@@ -11,6 +11,7 @@ import com.jme3.math.Ray
 import com.jme3.math.Vector3f
 import com.jme3.renderer.Camera
 import groovy.transform.CompileStatic
+import groovyx.gpars.agent.Agent
 
 import static com.frugs.dungeoncrawler.control.PlayerControl.PlayerAction.*
 
@@ -39,7 +40,7 @@ class PlayerControl implements AnalogListener{
 
         switch (action) {
             case MOVE_MOUSE_LOCATION:
-                eventManager.queueEvent(new PlayerMove(currentMouseFloorLocation, player))
+                eventManager.queueEvent(new PlayerMove(currentMouseFloorLocation, new Agent<Player>(player), eventManager))
                 break
             case STOP:
                 eventManager.queueEvent(new PlayerStop(player))

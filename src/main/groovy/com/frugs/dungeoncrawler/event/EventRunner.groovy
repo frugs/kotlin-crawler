@@ -19,10 +19,5 @@ class EventRunner implements Callable {
 
     def call() {
         event.process(tpf)
-
-        if (event instanceof Chainable) {
-            Event chain = (event as Chainable).chain
-            manager.queueEvent(chain)
-        }
     }
 }
