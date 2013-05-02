@@ -44,29 +44,33 @@ class Player extends Geometry {
 
     //return value is true if we've got more to go
     boolean moveTowardsDestination(Vector3f destination, float tpf) {
-        def remainingTravel = destination.subtract(localTranslation)
-        def displacement = remainingTravel.normalize().mult(speed).mult(tpf)
+        GParsStm.atomicWithBoolean {
+            def remainingTravel = destination.subtract(localTranslation)
+            def displacement = remainingTravel.normalize().mult(speed).mult(tpf)
 
-        if (remainingTravel.length() == 0) {
-            return false
+            if (remainingTravel.length() == 0) {
+                return false
+            }
+
+            def stillMoving = displacement.length() < remainingTravel.length()
+            stillMoving ? move(displacement) : move(remainingTravel)
+            stillMoving
         }
-
-        def stillMoving = displacement.length() < remainingTravel.length()
-        stillMoving ? move(displacement) : move(remainingTravel)
-        stillMoving
     }
 
     //return value is true if we've got more to rotate
     boolean rotateTowardsDirection(Vector3f normalisedDirection, float tpf) {
-        def angleToDestination = normalisedDirection.angleBetween(facingDirection)
+        GParsStm.atomicWithBoolean {
+            def angleToDestination = normalisedDirection.angleBetween(facingDirection)
 
-        boolean stillRotating = angularSpeed * tpf < angleToDestination
-        float rotation = stillRotating ? angularSpeed * tpf : angleToDestination
+            boolean stillRotating = angularSpeed * tpf < angleToDestination
+            float rotation = stillRotating ? angularSpeed * tpf : angleToDestination
 
-        def refAngle = normalisedDirection.angleBetween(normalisedDirection.cross(Vector3f.UNIT_Y))
-        rotation = refAngle > angleToDestination ? rotation : FastMath.TWO_PI - rotation
+            def refAngle = normalisedDirection.angleBetween(normalisedDirection.cross(Vector3f.UNIT_Y))
+            rotation = refAngle > angleToDestination ? rotation : FastMath.TWO_PI - rotation
 
-        rotate(0.0f, rotation, 0.0f)
-        stillRotating
+            rotate(0.0f, rotation, 0.0f)
+            stillRotating
+        }
     }
 }
