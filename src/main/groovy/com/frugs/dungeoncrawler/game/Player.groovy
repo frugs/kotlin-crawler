@@ -14,7 +14,7 @@ import groovy.transform.CompileStatic
 class Player extends Geometry {
 
     final float speed = 8.0f
-    final float angularSpeed = FastMath.DEG_TO_RAD * 3.0f
+    final float angularSpeed = FastMath.DEG_TO_RAD * 3.0f * 60
 
     Vector3f facingDirection
 
@@ -41,46 +41,31 @@ class Player extends Geometry {
         super.move(offset)
     }
 
-    //return value is whether we've got more to go or not
+    //return value is true if we've got more to go
     boolean moveTowardsDestination(Vector3f destination, float tpf) {
-       // GParsStm.atomicWithBoolean {
-            def remainingTravel = destination.subtract(localTranslation)
-            def displacement = remainingTravel.normalize().mult(speed).mult(tpf)
+        def remainingTravel = destination.subtract(localTranslation)
+        def displacement = remainingTravel.normalize().mult(speed).mult(tpf)
 
-            if (remainingTravel.length() == 0) {
-                return false
-            }
+        if (remainingTravel.length() == 0) {
+            return false
+        }
 
-            if (displacement.length() < remainingTravel.length()) {
-                move(displacement)
-                return true
-            } else {
-                move(remainingTravel)
-                return false
-            }
-        //}
+        def stillMoving = displacement.length() < remainingTravel.length()
+        stillMoving ? move(displacement) : move(remainingTravel)
+        stillMoving
     }
 
-    //return value is whether we've finished rotating or not
+    //return value is true if we've got more to rotate
     boolean rotateTowardsDirection(Vector3f normalisedDirection, float tpf) {
-     //   GParsStm.atomicWithBoolean {
-            def angleToDestination = normalisedDirection.angleBetween(facingDirection)
+        def angleToDestination = normalisedDirection.angleBetween(facingDirection)
 
-            if (angleToDestination == 0) {
-                return true
-            }
+        boolean stillRotating = angularSpeed * tpf < angleToDestination
+        float rotation = stillRotating ? angularSpeed * tpf : angleToDestination
 
-            def refAngle = normalisedDirection.angleBetween(normalisedDirection.cross(Vector3f.UNIT_Y))
-            int directionOfRotation = refAngle > angleToDestination ? 1 : -1
-            float rotation = angularSpeed * tpf
+        def refAngle = normalisedDirection.angleBetween(normalisedDirection.cross(Vector3f.UNIT_Y))
+        rotation = refAngle > angleToDestination ? rotation : FastMath.TWO_PI - rotation
 
-            if (angularSpeed < angleToDestination) {
-                rotate(0.0f, rotation * directionOfRotation, 0.0f)
-                return false
-            } else {
-                rotate(0.0f, rotation * directionOfRotation, 0.0f)
-                return true
-            }
-      //  }
+        rotate(0.0f, rotation, 0.0f)
+        stillRotating
     }
 }
