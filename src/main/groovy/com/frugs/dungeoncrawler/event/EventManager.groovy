@@ -17,7 +17,7 @@ class EventManager extends AbstractAppState{
     private List<Event> eventQueue = []
     private List<Event> nextEvents = []
 
-    void queueEvent(Event event) {
+    synchronized void queueEvent(Event event) {
         nextEvents << event
     }
 
