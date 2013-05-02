@@ -4,9 +4,10 @@ import com.jme3.app.Application
 import com.jme3.app.state.AbstractAppState
 import com.jme3.app.state.AppStateManager
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
+import groovyx.gpars.GParsPool
 
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
+import static groovy.transform.TypeCheckingMode.SKIP
 
 @CompileStatic
 class EventManager extends AbstractAppState{
@@ -15,7 +16,6 @@ class EventManager extends AbstractAppState{
 
     private List<Event> eventQueue = []
     private List<Event> nextEvents = []
-    private ExecutorService threadPool = Executors.newCachedThreadPool()
 
     void queueEvent(Event event) {
         nextEvents << event
@@ -62,9 +62,12 @@ class EventManager extends AbstractAppState{
         }
     }
 
+    @TypeChecked(SKIP)
     private void processQueue(float tpf) {
         def runners = eventQueue.collect { Event event -> new EventRunner(event, tpf, this) }
-        threadPool.invokeAll(runners)
+        GParsPool.withPool {
+            runners.eachParallel { EventRunner runner -> runner.call() }
+        }
     }
 
     private void loadNextEvents() {

@@ -9,6 +9,7 @@ import com.jme3.scene.Geometry
 import com.jme3.scene.Spatial
 import com.jme3.scene.shape.Box
 import groovy.transform.CompileStatic
+import groovyx.gpars.stm.GParsStm
 
 @CompileStatic
 class Player extends Geometry {

@@ -14,7 +14,7 @@ class EventManagerTest {
         @Override
         void process(float tpf) {
             int run = counter
-            Thread.sleep(100 * counter)
+            Thread.sleep(1000 * counter)
             counter = run + counter
         }
     }
