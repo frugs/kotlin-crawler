@@ -6,6 +6,7 @@ import com.frugs.dungeoncrawler.appstate.RtsCamera
 import com.frugs.dungeoncrawler.control.CameraActionListener.CameraAction
 import com.frugs.dungeoncrawler.control.PlayerControl.PlayerAction
 import com.frugs.dungeoncrawler.event.EventManager
+import com.frugs.dungeoncrawler.guice.DungeonCrawlerModule
 import com.google.inject.Guice
 import com.google.inject.Inject
 import com.google.inject.Injector
@@ -27,7 +28,7 @@ import static groovy.transform.TypeCheckingMode.SKIP
 @CompileStatic
 class DungeonCrawler extends SimpleApplication {
 
-    static private Injector injector = Guice.createInjector()
+    private Injector injector
 
     RtsCamera rtsCamera
     InGame inGame
@@ -53,17 +54,27 @@ class DungeonCrawler extends SimpleApplication {
 
         showSettings = false
         settings = appSettings
-        this.rtsCamera = injector.getInstance(RtsCamera)
-        this.inGame = injector.getInstance(InGame)
-        this.mainMenuController = injector.getInstance(MainMenuController)
-        this.eventManager = injector.getInstance(EventManager)
     }
 
     @Override
     void simpleInitApp() {
+        initEventManager()
+        initInjector()
         initAssets()
         initKeyBindings()
         initAppStates()
+    }
+
+    private void initEventManager() {
+        this.eventManager = new EventManager()
+    }
+
+    private void initInjector() {
+        injector = Guice.createInjector(new DungeonCrawlerModule(this))
+
+        this.rtsCamera = injector.getInstance(RtsCamera)
+        this.inGame = injector.getInstance(InGame)
+        this.mainMenuController = injector.getInstance(MainMenuController)
     }
 
     private void initAssets() {

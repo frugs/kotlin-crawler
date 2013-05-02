@@ -13,6 +13,8 @@ import com.jme3.input.InputManager
 import com.jme3.scene.Node
 import groovy.transform.CompileStatic
 
+import javax.inject.Inject
+
 @CompileStatic
 class InGame extends AbstractAppState {
 
@@ -21,8 +23,10 @@ class InGame extends AbstractAppState {
     InputManager inputManager
     PlayerControl playerControl
 
-    InGame() {
-        super(enabled: false)
+    @Inject
+    InGame(Node rootNode, InputManager inputManager) {
+        this.rootNode = rootNode
+        this.inputManager = inputManager
     }
 
     @Override
@@ -30,8 +34,6 @@ class InGame extends AbstractAppState {
         super.initialize(stateManager, app)
         SimpleApplication simpleApp = app as DungeonCrawler
         player = new Player(simpleApp.materials.unshaded)
-        rootNode = simpleApp.rootNode
-        inputManager = simpleApp.inputManager
         playerControl = new PlayerControl(player, simpleApp.eventManager, simpleApp.camera, inputManager)
         enabled = false
     }

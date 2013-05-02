@@ -4,6 +4,7 @@ import com.frugs.dungeoncrawler.control.CameraActionListener
 import com.frugs.dungeoncrawler.control.CameraActionListener.CameraAction
 import com.frugs.dungeoncrawler.control.PlayerControl
 import com.frugs.dungeoncrawler.scene.RtsCameraNode
+import com.google.inject.Inject
 import com.jme3.app.Application
 import com.jme3.app.SimpleApplication
 import com.jme3.app.state.AbstractAppState
@@ -26,13 +27,16 @@ class RtsCamera extends AbstractAppState {
 
     private int screenEdgeOffset = 10
 
+    @Inject
+    RtsCamera(Camera cam, InputManager inputManager, Node rootNode) {
+        this.cam = cam
+        this.inputManager = inputManager
+        this.rootNode = rootNode
+    }
+
     @Override
     void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app)
-        SimpleApplication simpleApp = app as SimpleApplication
-        cam = simpleApp.camera
-        inputManager = simpleApp.inputManager
-        rootNode = simpleApp.rootNode
         rtsCameraNode = new RtsCameraNode(cam)
         cameraActionListener = new CameraActionListener(rtsCameraNode)
         enabled = false
