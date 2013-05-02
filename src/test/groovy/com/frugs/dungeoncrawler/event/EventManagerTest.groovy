@@ -19,11 +19,11 @@ class EventManagerTest {
         }
     }
 
-    class TestInterruptable implements Interruptable {
+    class TestInterruptible implements Interruptible {
         List<? extends Interrupter> interruptedBy = [TestInterrupter] as List<? extends Interrupter>
         long timeIssued
 
-        TestInterruptable(long timeIssued) {
+        TestInterruptible(long timeIssued) {
             this.timeIssued = timeIssued
         }
 
@@ -34,7 +34,7 @@ class EventManagerTest {
 
         @Override
         Event getChain() {
-            new TestInterruptable(timeIssued)
+            new TestInterruptible(timeIssued)
         }
     }
 
@@ -51,11 +51,11 @@ class EventManagerTest {
         }
     }
 
-    class TestSelfInterruptable implements Interruptable, Interrupter {
+    class TestSelfInterruptible implements Interruptible, Interrupter {
         long timeIssued
-        List<? extends Interrupter> interruptedBy = [TestSelfInterruptable] as List<? extends Interrupter>
+        List<? extends Interrupter> interruptedBy = [TestSelfInterruptible] as List<? extends Interrupter>
 
-        TestSelfInterruptable(long timeIssued) {
+        TestSelfInterruptible(long timeIssued) {
             this.timeIssued = timeIssued
         }
 
@@ -66,7 +66,7 @@ class EventManagerTest {
 
         @Override
         Event getChain() {
-            new TestSelfInterruptable(timeIssued)
+            new TestSelfInterruptible(timeIssued)
         }
     }
 
@@ -100,8 +100,8 @@ class EventManagerTest {
     }
 
     @Test
-    void update_shouldNotProcessInterruptablesInQueue_givenInterrupterInQueue() {
-        [new TestInterruptable(0), new TestInterruptable(1), new TestInterruptable(3), new TestInterrupter(4)].each { Event event ->
+    void update_shouldNotProcessInterruptiblesInQueue_givenInterrupterInQueue() {
+        [new TestInterruptible(0), new TestInterruptible(1), new TestInterruptible(3), new TestInterrupter(4)].each { Event event ->
             eventManager.queueEvent(event)
         }
         eventManager.update(1) //init queue
@@ -112,8 +112,8 @@ class EventManagerTest {
     }
 
     @Test
-    void update_shouldProcessOnlyLatestSelfInterruptable_givenSeveralInQueue() {
-        [new TestSelfInterruptable(0), new TestSelfInterruptable(1), new TestSelfInterruptable(2), new TestSelfInterruptable(3)].each { Event event ->
+    void update_shouldProcessOnlyLatestSelfInterruptible_givenSeveralInQueue() {
+        [new TestSelfInterruptible(0), new TestSelfInterruptible(1), new TestSelfInterruptible(2), new TestSelfInterruptible(3)].each { Event event ->
             eventManager.queueEvent(event)
         }
         eventManager.update(1) //init queue

@@ -1,9 +1,9 @@
 package com.frugs.dungeoncrawler.event.player
 
-import com.frugs.dungeoncrawler.game.Player
 import com.frugs.dungeoncrawler.event.Event
-import com.frugs.dungeoncrawler.event.Interruptable
 import com.frugs.dungeoncrawler.event.Interrupter
+import com.frugs.dungeoncrawler.event.Interruptible
+import com.frugs.dungeoncrawler.game.Player
 import com.frugs.dungeoncrawler.util.Radians
 import com.jme3.math.FastMath
 import com.jme3.math.Quaternion
@@ -11,7 +11,7 @@ import com.jme3.math.Vector3f
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class PlayerMove implements Interruptable, Interrupter {
+class PlayerMove implements Interruptible, Interrupter {
 
     private static final Vector3f MARGIN = Vector3f.UNIT_XYZ.mult(0.1f)
     private boolean endOfChain = true

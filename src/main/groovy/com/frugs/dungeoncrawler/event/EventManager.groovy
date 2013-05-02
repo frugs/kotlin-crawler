@@ -1,6 +1,5 @@
 package com.frugs.dungeoncrawler.event
 
-import com.google.inject.Inject
 import com.jme3.app.Application
 import com.jme3.app.state.AbstractAppState
 import com.jme3.app.state.AppStateManager
@@ -43,22 +42,22 @@ class EventManager extends AbstractAppState{
 
     private void performInterrupts() {
         def interrupters = []
-        def interruptables = []
+        def interruptibles = []
         eventQueue.each { Event event -> event
             if (event instanceof Interrupter) {
                 interrupters << event as Interrupter
             }
-            if (event instanceof Interruptable) {
-                interruptables << event
+            if (event instanceof Interruptible) {
+                interruptibles << event
             }
         }
 
-        interruptables.each { Interruptable interruptable ->
+        interruptibles.each { Interruptible interruptible ->
             def interrupterExists = interrupters.any { Interrupter interrupter ->
-                interruptable.interruptedBy.any { interrupter.class == it && interruptable.timeIssued < interrupter.timeIssued }
+                interruptible.interruptedBy.any { interrupter.class == it && interruptible.timeIssued < interrupter.timeIssued }
             }
             if (interrupterExists) {
-                eventQueue.remove(interruptable)
+                eventQueue.remove(interruptible)
             }
         }
     }
