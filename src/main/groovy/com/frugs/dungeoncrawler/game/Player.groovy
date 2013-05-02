@@ -1,6 +1,5 @@
 package com.frugs.dungeoncrawler.game
 
-import com.frugs.dungeoncrawler.util.Radians
 import com.jme3.material.Material
 import com.jme3.math.ColorRGBA
 import com.jme3.math.FastMath
@@ -32,13 +31,6 @@ class Player extends Geometry {
     }
 
     @Override
-    Spatial rotate(float xAngle, float yAngle, float zAngle) {
-        assert xAngle == 0.0f && zAngle == 0.0f //rotations in other dimensions not supported yet
-        Quaternion rotation = Quaternion.ZERO.fromAngles(xAngle, yAngle, zAngle)
-        rotate(rotation)
-    }
-
-    @Override
     synchronized Spatial rotate(Quaternion rotation) {
         facingDirection = rotation.toRotationMatrix().mult(facingDirection)
         super.rotate(rotation)
@@ -47,5 +39,48 @@ class Player extends Geometry {
     @Override
     synchronized Spatial move(Vector3f offset) {
         super.move(offset)
+    }
+
+    //return value is whether we've got more to go or not
+    boolean moveTowardsDestination(Vector3f destination, float tpf) {
+       // GParsStm.atomicWithBoolean {
+            def remainingTravel = destination.subtract(localTranslation)
+            def displacement = remainingTravel.normalize().mult(speed).mult(tpf)
+
+            if (remainingTravel.length() == 0) {
+                return false
+            }
+
+            if (displacement.length() < remainingTravel.length()) {
+                move(displacement)
+                return true
+            } else {
+                move(remainingTravel)
+                return false
+            }
+        //}
+    }
+
+    //return value is whether we've finished rotating or not
+    boolean rotateTowardsDirection(Vector3f normalisedDirection, float tpf) {
+     //   GParsStm.atomicWithBoolean {
+            def angleToDestination = normalisedDirection.angleBetween(facingDirection)
+
+            if (angleToDestination == 0) {
+                return true
+            }
+
+            def refAngle = normalisedDirection.angleBetween(normalisedDirection.cross(Vector3f.UNIT_Y))
+            int directionOfRotation = refAngle > angleToDestination ? 1 : -1
+            float rotation = angularSpeed * tpf
+
+            if (angularSpeed < angleToDestination) {
+                rotate(0.0f, rotation * directionOfRotation, 0.0f)
+                return false
+            } else {
+                rotate(0.0f, rotation * directionOfRotation, 0.0f)
+                return true
+            }
+      //  }
     }
 }

@@ -8,7 +8,6 @@ repositories {
 
 dependencies {
     compile group: 'com.google.inject', name: 'guice', version: '3.0'
-    compile "org.codehaus.gpars:gpars:1.0.0"
     compile 'org.codehaus.groovy:groovy-all:2.1.3'
     compile fileTree(dir: 'jme3/lib/', include: '*.jar')
     testCompile 'junit:junit:4.11'
