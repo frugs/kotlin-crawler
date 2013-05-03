@@ -1,3 +1,2 @@
 ### TODO
--- Colour one of the player's faces orange so that I know which way it's facing
 -- Write some tests to check that Player is threadsafe

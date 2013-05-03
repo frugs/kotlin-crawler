@@ -6,13 +6,15 @@ import com.jme3.math.FastMath
 import com.jme3.math.Quaternion
 import com.jme3.math.Vector3f
 import com.jme3.scene.Geometry
+import com.jme3.scene.Node
 import com.jme3.scene.Spatial
 import com.jme3.scene.shape.Box
+import com.jme3.scene.shape.Dome
 import groovy.transform.CompileStatic
 import groovyx.gpars.stm.GParsStm
 
 @CompileStatic
-class Player extends Geometry {
+class Player extends Node {
 
     float speed = 8.0f
     float angularSpeed = FastMath.DEG_TO_RAD * 3.0f * 60
@@ -20,15 +22,10 @@ class Player extends Geometry {
     Vector3f facingDirection
 
     Player(Material mat) {
-        this(mat, Vector3f.UNIT_Z)
-    }
-
-    Player(Material mat, Vector3f facingDirection) {
-        super("Box", new Box(Vector3f.ZERO, 1, 1, 1))  // create cube geometry from the shape
-        this.facingDirection = facingDirection.normalize()
-        mat.setColor("Color", ColorRGBA.Blue)   // set color of material to blue
-        material = mat                 // set the cube's material
-        rotate(0f, 45f * FastMath.DEG_TO_RAD, 0f)
+        super("player")
+        Geometry dome = createDome(mat)
+        attachChild(dome)
+        this.facingDirection = Vector3f.UNIT_Z
     }
 
     @Override
@@ -81,5 +78,14 @@ class Player extends Geometry {
         def proposedAntiClockwiseVector = normalisedDirection.subtract(antiClockwise.toRotationMatrix().mult(facingDirection))
 
         proposedAntiClockwiseVector.length() > proposedClockwiseVector.length() ? rotation : FastMath.TWO_PI - rotation
+    }
+
+    private Geometry createDome(Material mat) {
+        Geometry dome = new Geometry("Dome", new Dome(Vector3f.ZERO, 2, 4, 1.5f, true))
+        dome.rotate(FastMath.HALF_PI, 0.0f, 0.0f)
+        mat.setColor("Color", ColorRGBA.Blue)
+        material = mat
+        dome.material = mat
+        dome
     }
 }
