@@ -8,7 +8,6 @@ import com.jme3.math.Vector3f
 import com.jme3.scene.Geometry
 import com.jme3.scene.Node
 import com.jme3.scene.Spatial
-import com.jme3.scene.shape.Box
 import com.jme3.scene.shape.Dome
 import groovy.transform.CompileStatic
 import groovyx.gpars.stm.GParsStm
@@ -17,7 +16,7 @@ import groovyx.gpars.stm.GParsStm
 class Player extends Node {
 
     float speed = 8.0f
-    float angularSpeed = FastMath.DEG_TO_RAD * 3.0f * 60
+    float angularSpeed = FastMath.DEG_TO_RAD * 10.0f * 60
 
     Vector3f facingDirection
 

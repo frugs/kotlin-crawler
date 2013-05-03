@@ -1,5 +1,4 @@
 ### GAME ISSUES
-    -- Rotation has trouble if we get to the destination before we've finished rotating. Persist the direction we need to face in the chain?
     -- Occasional glitches when machine is under load and tpf < 1/60
 
 ### FIXED ISSUES
