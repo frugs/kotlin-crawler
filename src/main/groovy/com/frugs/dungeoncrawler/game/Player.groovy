@@ -14,8 +14,8 @@ import groovyx.gpars.stm.GParsStm
 @CompileStatic
 class Player extends Geometry {
 
-    final float speed = 8.0f
-    final float angularSpeed = FastMath.DEG_TO_RAD * 3.0f * 60
+    float speed = 8.0f
+    float angularSpeed = FastMath.DEG_TO_RAD * 3.0f * 60
 
     Vector3f facingDirection
 
@@ -59,18 +59,27 @@ class Player extends Geometry {
     }
 
     //return value is true if we've got more to rotate
-    boolean rotateTowardsDirection(Vector3f normalisedDirection, float tpf) {
+    boolean rotateTowardsDestination(Vector3f destination, float tpf) {
         GParsStm.atomicWithBoolean {
+            def normalisedDirection = destination.subtract(localTranslation).normalize()
             def angleToDestination = normalisedDirection.angleBetween(facingDirection)
 
             boolean stillRotating = angularSpeed * tpf < angleToDestination
             float rotation = stillRotating ? angularSpeed * tpf : angleToDestination
-
-            def refAngle = normalisedDirection.angleBetween(normalisedDirection.cross(Vector3f.UNIT_Y))
-            rotation = refAngle > angleToDestination ? rotation : FastMath.TWO_PI - rotation
+            rotation = getClockwiseOrAntiClockwise(rotation, normalisedDirection)
 
             rotate(0.0f, rotation, 0.0f)
             stillRotating
         }
+    }
+
+    private float getClockwiseOrAntiClockwise(float rotation, Vector3f normalisedDirection) {
+        def clockwise = Quaternion.ZERO.fromAngleNormalAxis(rotation, Vector3f.UNIT_Y)
+        def proposedClockwiseVector = normalisedDirection.subtract(clockwise.toRotationMatrix().mult(facingDirection))
+
+        def antiClockwise = Quaternion.ZERO.fromAngleNormalAxis(FastMath.TWO_PI - rotation, Vector3f.UNIT_Y)
+        def proposedAntiClockwiseVector = normalisedDirection.subtract(antiClockwise.toRotationMatrix().mult(facingDirection))
+
+        proposedAntiClockwiseVector.length() > proposedClockwiseVector.length() ? rotation : FastMath.TWO_PI - rotation
     }
 }

@@ -36,7 +36,7 @@ class PlayerMove implements Interruptible, Interrupter {
     @Override
     void process(float tpf) {
         def moved = player.moveTowardsDestination(destination, tpf)
-        rotated = rotate ? player.rotateTowardsDirection(destination.normalize(), tpf) : false
+        rotated = rotate ? player.rotateTowardsDestination(destination, tpf) : false
         endOfChain = moved || rotated
     }
 
