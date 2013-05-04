@@ -1,5 +1,6 @@
 ### GAME ISSUES
     -- Occasional glitches when machine is under load and tpf < 1/60
+    -- Player warps on first rotation
 
 ### FIXED ISSUES
     -- Player occasionally spins 180 at the end of a PlayerMove chain, probably caused by travelling past the destination [FIXED]
