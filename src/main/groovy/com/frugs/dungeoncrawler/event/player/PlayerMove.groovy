@@ -14,7 +14,7 @@ class PlayerMove implements Interruptible, Interrupter {
     final long timeIssued
     private final boolean rotate
 
-    private boolean endOfChain = true
+    private boolean continueMoving = true
     private boolean rotated = false
 
     Vector3f destination
@@ -35,7 +35,7 @@ class PlayerMove implements Interruptible, Interrupter {
 
     @Override
     void process(float tpf) {
-        endOfChain = player.moveTowardsDestination(destination, tpf)
+        continueMoving = player.moveTowardsDestination(destination, tpf)
         rotated = rotate ? player.rotateTowardsDestination(destination, tpf) : false
     }
 
@@ -46,6 +46,6 @@ class PlayerMove implements Interruptible, Interrupter {
 
     @Override
     Event getChain() {
-        endOfChain ? new PlayerMove(destination, player, rotated, timeIssued) : new PlayerStop(player)
+        continueMoving ? new PlayerMove(destination, player, rotated, timeIssued) : new PlayerStop(player)
     }
 }
