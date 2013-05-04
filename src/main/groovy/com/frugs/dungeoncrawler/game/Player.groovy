@@ -1,5 +1,6 @@
 package com.frugs.dungeoncrawler.game
 
+import com.frugs.dungeoncrawler.util.Radians
 import com.jme3.material.Material
 import com.jme3.math.ColorRGBA
 import com.jme3.math.FastMath
@@ -57,15 +58,12 @@ class Player extends Node {
     //return value is true if we've got more to rotate
     boolean rotateTowardsDestination(Vector3f destination, float tpf) {
         GParsStm.atomicWithBoolean {
-            def normalisedDirection = destination.subtract(localTranslation).normalize()
-            def angleToDestination = normalisedDirection.angleBetween(facingDirection)
-
-            boolean stillRotating = angularSpeed * tpf < angleToDestination
-            float rotation = stillRotating ? angularSpeed * tpf : angleToDestination
-            rotation = facingDirection.cross(normalisedDirection).y > 0 ? rotation : FastMath.TWO_PI - rotation
+            def angleToDestination = FastMath.asin(facingDirection.cross(destination.subtract(localTranslation).normalize()).y)
+            def angularVelocity = angularSpeed * tpf * FastMath.sign(angleToDestination)
+            float rotation = Radians.smallerAbsolute(angularVelocity, angleToDestination)
 
             rotate(0.0f, rotation, 0.0f)
-            stillRotating
+            rotation != angleToDestination
         }
     }
 
