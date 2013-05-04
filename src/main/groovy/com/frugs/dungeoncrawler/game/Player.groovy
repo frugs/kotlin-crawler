@@ -62,21 +62,11 @@ class Player extends Node {
 
             boolean stillRotating = angularSpeed * tpf < angleToDestination
             float rotation = stillRotating ? angularSpeed * tpf : angleToDestination
-            rotation = getClockwiseOrAntiClockwise(rotation, normalisedDirection)
+            rotation = facingDirection.cross(normalisedDirection).y > 0 ? rotation : FastMath.TWO_PI - rotation
 
             rotate(0.0f, rotation, 0.0f)
             stillRotating
         }
-    }
-
-    private float getClockwiseOrAntiClockwise(float rotation, Vector3f normalisedDirection) {
-        def clockwise = Quaternion.ZERO.fromAngleNormalAxis(rotation, Vector3f.UNIT_Y)
-        def proposedClockwiseVector = normalisedDirection.subtract(clockwise.toRotationMatrix().mult(facingDirection))
-
-        def antiClockwise = Quaternion.ZERO.fromAngleNormalAxis(FastMath.TWO_PI - rotation, Vector3f.UNIT_Y)
-        def proposedAntiClockwiseVector = normalisedDirection.subtract(antiClockwise.toRotationMatrix().mult(facingDirection))
-
-        proposedAntiClockwiseVector.length() > proposedClockwiseVector.length() ? rotation : FastMath.TWO_PI - rotation
     }
 
     private Geometry createDome(Material mat) {
