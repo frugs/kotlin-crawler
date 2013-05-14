@@ -1,9 +1,9 @@
 .gradle/
 .idea/
 build/
-dungeon-crawler.iml
-dungeon-crawler.ipr
-dungeon-crawler.iws
+*.iml
+*.ipr
+*.iws
 liblwjgl64.so
 libopenal64.so
 OpenAL64.dll
