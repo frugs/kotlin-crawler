@@ -12,6 +12,9 @@ import com.frugs.dungeoncrawler.guice.DungeonCrawlerModule
 import com.google.inject.Guice
 import com.frugs.dungeoncrawler.appstate.InGame
 import com.frugs.dungeoncrawler.appstate.RtsCamera
+import com.jme3.input.KeyInput
+import com.frugs.dungeoncrawler.action.CameraAction
+import com.jme3.input.controls.KeyTrigger
 
 class DungeonCrawler(): SimpleApplication() {
     {
@@ -59,6 +62,21 @@ class DungeonCrawler(): SimpleApplication() {
             stateManager.attach(rtsCamera)
         }
 
+        fun initKeyBindings() {
+            mapOf(
+                    CameraAction.MOVE_UP.id.to(KeyInput.KEY_UP),
+                    CameraAction.MOVE_LEFT.id.to(KeyInput.KEY_LEFT),
+                    CameraAction.MOVE_DOWN.id.to(KeyInput.KEY_DOWN),
+                    CameraAction.MOVE_RIGHT.id.to(KeyInput.KEY_RIGHT)
+            ).iterator().forEach {
+                val id = it.key
+                val binding = it.value
+
+                getInputManager()!!.addMapping(id, KeyTrigger(binding))
+            }
+        }
+
         attachAppStates()
+        initKeyBindings()
     }
 }

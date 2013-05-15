@@ -7,7 +7,8 @@ import com.jme3.math.Vector3f
 import com.google.inject.Inject
 import com.google.inject.Singleton
 
-class RtsCameraNode [Inject] [Singleton] (
+[Singleton]
+class RtsCameraNode [Inject] (
     val camera: Camera
 ): CameraNode("RtsCamNode", camera) {
     {

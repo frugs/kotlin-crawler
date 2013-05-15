@@ -27,7 +27,7 @@ class RtsCamera [Inject] (
             $enabled = state
             if (state) {
                 rootNode.attachChild(rtsCameraNode)
-                inputManager.addListener(cameraActionListener, *CameraAction.values().map { it.id }.toArray() as Array<String?>)
+                inputManager.addListener(cameraActionListener, *CameraAction.ids)
             } else if (initialized) {
                 rootNode.detachChild(rtsCameraNode)
                 inputManager.removeListener(cameraActionListener)
