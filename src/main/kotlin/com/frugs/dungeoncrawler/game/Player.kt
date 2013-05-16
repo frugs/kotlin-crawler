@@ -10,6 +10,9 @@ import com.jme3.math.ColorRGBA
 import com.jme3.math.Quaternion
 import com.jme3.scene.Spatial
 import com.frugs.dungeoncrawler.util.Radians
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.write
+import kotlin.concurrent.read
 
 class Player(mat: Material): Node("player") {
     {
@@ -18,36 +21,45 @@ class Player(mat: Material): Node("player") {
     }
 
     var facingDirection: Vector3f = Vector3f.UNIT_Z
+        get() = lock.read <Vector3f> { $facingDirection }
+
     var speed: Float = 8.0
     var angularSpeed: Float = (FastMath.DEG_TO_RAD * 10.0 * 60.0).toFloat()
 
-    public override fun rotate(rot: Quaternion?): Spatial? {
+    val lock = ReentrantReadWriteLock()
+
+    public override fun rotate(rot: Quaternion?): Spatial? = lock.write <Spatial?> {
         facingDirection = rot!!.toRotationMatrix()!!.mult(facingDirection)!!
-        return super.rotate(rot)
+        super.rotate(rot)
+    }
+
+    public override fun move(offset: Vector3f?): Spatial? = lock.write <Spatial?> { super.move(offset) }
+    public override fun getLocalTranslation(): Vector3f? = lock.read <Vector3f?> { super.getLocalTranslation() }
+    public override fun setLocalTranslation(localTranslation: Vector3f?): Unit {
+        lock.write { super.setLocalTranslation(localTranslation) }
     }
 
     //return value is true if we've got more to go
-    public fun moveTowardsDestination(destination: Vector3f, tpf: Float): Boolean {
+    public fun moveTowardsDestination(destination: Vector3f, tpf: Float): Boolean = lock.write <Boolean> {
         val remainingTravel = destination.subtract(getLocalTranslation())!!
         val displacement = remainingTravel.normalize()!!.mult(speed)!!.mult(tpf)!!
 
-        if (remainingTravel.length() == 0.0.toFloat()) {
-            return false
+        if (remainingTravel.length() == 0.0.toFloat()) false
+        else {
+            val stillMoving = displacement.length() < remainingTravel.length()
+            if (stillMoving) move(displacement) else move(remainingTravel)
+            stillMoving
         }
-
-        val stillMoving = displacement.length() < remainingTravel.length()
-        if (stillMoving) move(displacement) else move(remainingTravel)
-        return stillMoving
     }
 
     //return value is true if we've got more to rotate
-    public fun rotateTowardsDestination(destination: Vector3f, tpf: Float): Boolean {
+    public fun rotateTowardsDestination(destination: Vector3f, tpf: Float): Boolean = lock.write <Boolean> {
         val angleToDestination = FastMath.asin(facingDirection.cross(destination.subtract(getLocalTranslation())!!.normalize())!!.y)
         val angularVelocity = angularSpeed * tpf * FastMath.sign(angleToDestination)
         val rotation = Radians.smallerAbsolute(angularVelocity, angleToDestination)
 
         rotate(0.0, rotation, 0.0)
-        return rotation != angleToDestination
+        rotation != angleToDestination
     }
 
     private fun createDome(mat: Material): Geometry {
