@@ -25,8 +25,9 @@ class EventManager : AbstractAppState() {
         }
 
         super.update(tpf)
-        processQueue()
+
         performInterrupts()
+        processQueue()
         loadNextEvents()
     }
 

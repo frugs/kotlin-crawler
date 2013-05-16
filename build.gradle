@@ -31,6 +31,15 @@ dependencies {
 
 mainClassName = 'com.frugs.dungeoncrawler.DungeoncrawlerPackage'
 
+test {
+    testClassesDir = project.tasks.compileTestKotlin.destinationDir
+    testLogging {
+        showExceptions = true
+        showStandardStreams = true
+        exceptionFormat "full"
+    }
+}
+
 idea.project {
     jdkName = '1.7'
     languageLevel = '1.7'
