@@ -15,6 +15,7 @@ import com.frugs.dungeoncrawler.appstate.RtsCamera
 import com.jme3.input.KeyInput
 import com.frugs.dungeoncrawler.action.CameraAction
 import com.jme3.input.controls.KeyTrigger
+import com.frugs.dungeoncrawler.event.EventManager
 
 class DungeonCrawler(): SimpleApplication() {
     {
@@ -55,11 +56,13 @@ class DungeonCrawler(): SimpleApplication() {
             val mainMenuController = injector.getInstance(javaClass<MainMenuController>())
             val inGame = injector.getInstance(javaClass<InGame>())
             val rtsCamera = injector.getInstance(javaClass<RtsCamera>())
+            val eventManager = injector.getInstance(javaClass<EventManager>())
 
             stateManager.detach(getStateManager()?.getState(javaClass<FlyCamAppState>()))
             stateManager.attach(mainMenuController)
             stateManager.attach(inGame)
             stateManager.attach(rtsCamera)
+            stateManager.attach(eventManager)
         }
 
         fun initKeyBindings() {
