@@ -20,8 +20,15 @@ class Player(mat: Material): Node("player") {
         attachChild(dome)
     }
 
-    var facingDirection: Vector3f = Vector3f.UNIT_Z
-        get() = lock.read <Vector3f> { $facingDirection }
+    public var facingDirection: Vector3f = Vector3f.UNIT_Z
+        get() =  try {
+            lock.readLock().lock()
+            $facingDirection
+        } finally { lock.readLock().unlock() }
+        private set(direction: Vector3f) = try {
+            lock.writeLock().lock()
+            $facingDirection = direction
+        } finally { lock.writeLock().unlock() }
 
     var speed: Float = 8.0
     var angularSpeed: Float = (FastMath.DEG_TO_RAD * 10.0 * 60.0).toFloat()
