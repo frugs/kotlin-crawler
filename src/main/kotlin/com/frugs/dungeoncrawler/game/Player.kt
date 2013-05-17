@@ -69,12 +69,16 @@ class Player [Inject] ([Named("unshaded")] mat: Material): Node("player") {
 
     //return value is true if we've got more to rotate
     public fun rotateTowardsDestination(destination: Vector3f, tpf: Float): Boolean = lock.write <Boolean> {
-        val angleToDestination = FastMath.asin(facingDirection.cross(destination.subtract(getLocalTranslation())!!.normalize())!!.y)
+        val destinationDirection = destination.subtract(getLocalTranslation())!!.normalize()
+        val modCrossProduct = FastMath.asin(facingDirection.cross(destinationDirection)!!.y)
+        val angleToDestination = if (modCrossProduct != 0.toFloat() || facingDirection == destinationDirection) modCrossProduct
+            else FastMath.PI
+
         val angularVelocity = angularSpeed * tpf * FastMath.sign(angleToDestination)
         val rotation = Radians.smallerAbsolute(angularVelocity, angleToDestination)
 
         rotate(0.0, rotation, 0.0)
-        rotation != angleToDestination
+        rotation != modCrossProduct
     }
 
     private fun createDome(mat: Material): Geometry {

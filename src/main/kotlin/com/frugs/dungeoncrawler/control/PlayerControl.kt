@@ -22,13 +22,13 @@ class PlayerControl [Inject] (
     val inputManager: InputManager
 ) : AnalogListener {
 
-    override fun onAnalog(name: String?, value: Float, tpf: Float) {
-        val action = PlayerAction.valueOf(name)
+    override fun onAnalog(p0: String?, p1: Float, p2: Float) {
+        val action = PlayerAction.valueOf(p0)
 
         when (action) {
             MOVE_MOUSE_LOCATION -> eventManager.queueEvent(PlayerMove(currentMouseFloorLocation(), player, true))
             STOP -> eventManager.queueEvent(PlayerStop())
-            else -> throw UnsupportedOperationException("Cannot process non-player action: '${name}'")
+            else -> throw UnsupportedOperationException("Cannot process non-player action: '${p0}'")
         }
     }
 

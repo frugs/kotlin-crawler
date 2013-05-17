@@ -49,7 +49,7 @@ class DungeonCrawler(): SimpleApplication() {
 
     public val materials: MutableMap<String, Material>
         get() = hashMapOf(
-                Pair("unshaded", Material(getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md"))
+            Pair("unshaded", Material(getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md"))
         )
 
     public override fun simpleInitApp() {
@@ -74,8 +74,7 @@ class DungeonCrawler(): SimpleApplication() {
                 CameraAction.MOVE_LEFT.id.to(KeyInput.KEY_LEFT),
                 CameraAction.MOVE_DOWN.id.to(KeyInput.KEY_DOWN),
                 CameraAction.MOVE_RIGHT.id.to(KeyInput.KEY_RIGHT),
-                PlayerAction.STOP.id.to(KeyInput.KEY_S),
-                PlayerAction.MOVE_MOUSE_LOCATION.id.to(KeyInput.KEY_A)
+                PlayerAction.STOP.id.to(KeyInput.KEY_S)
             ).iterator().forEach {
                 val id = it.key
                 val binding = it.value
@@ -97,6 +96,6 @@ class DungeonCrawler(): SimpleApplication() {
 
         attachAppStates()
         initKeyBindings()
-//        initMouseBindings()
+        initMouseBindings()
     }
 }

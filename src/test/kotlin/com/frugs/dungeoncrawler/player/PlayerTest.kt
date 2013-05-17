@@ -72,7 +72,6 @@ class PlayerTest {
         assert(player.facingDirection.x != 0.toFloat(), "Player did not rotate.")
     }
 
-
  fun assertRotatedClockwise() {
         assert(player.facingDirection.x < 0, "Player did not rotate clockwise; rotated anti-clockwise to $player.facingDirection")
     }

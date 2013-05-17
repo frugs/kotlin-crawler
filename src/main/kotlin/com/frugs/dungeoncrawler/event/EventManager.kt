@@ -4,7 +4,9 @@ import com.jme3.app.state.AbstractAppState
 import sun.nio.ch.Interruptible
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import com.google.inject.Singleton
 
+[Singleton]
 class EventManager : AbstractAppState() {
 
     private val executor: ExecutorService = Executors.newCachedThreadPool()
@@ -12,11 +14,11 @@ class EventManager : AbstractAppState() {
     private var nextEvents: MutableList<Event> = linkedListOf()
     private var eventQueue: MutableList<Event> = linkedListOf()
 
-    public var enabled: Boolean = true
+    public var enabled: Boolean = false
         get() = $enabled
         set(state: Boolean) { $enabled = state }
 
-    public fun queueEvent(event: Event) { synchronized<Unit>(this) { nextEvents.add(event) } }
+    public fun queueEvent(event: Event) { synchronized <Unit>(this) { nextEvents.add(event) } }
 
     override public fun update(tpf: Float) {
         fun processQueue() {

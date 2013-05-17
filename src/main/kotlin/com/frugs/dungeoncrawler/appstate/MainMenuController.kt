@@ -12,6 +12,7 @@ import com.jme3.renderer.ViewPort
 import com.google.inject.Inject
 import com.jme3.app.Application
 import com.jme3.niftygui.NiftyJmeDisplay
+import com.frugs.dungeoncrawler.event.EventManager
 
 class MainMenuController [Inject] (
     private val stateManager: AppStateManager,
@@ -40,6 +41,7 @@ class MainMenuController [Inject] (
     fun startGame() {
         stateManager.getState(javaClass<InGame>())!!.enabled = true
         stateManager.getState(javaClass<RtsCamera>())!!.enabled = true
+        stateManager.getState(javaClass<EventManager>())!!.enabled = true
         enabled = false
     }
 
