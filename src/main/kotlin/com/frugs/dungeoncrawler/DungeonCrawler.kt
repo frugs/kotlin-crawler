@@ -16,6 +16,9 @@ import com.jme3.input.KeyInput
 import com.frugs.dungeoncrawler.action.CameraAction
 import com.jme3.input.controls.KeyTrigger
 import com.frugs.dungeoncrawler.event.EventManager
+import com.frugs.dungeoncrawler.action.PlayerAction
+import com.jme3.input.MouseInput
+import com.jme3.input.controls.MouseButtonTrigger
 
 class DungeonCrawler(): SimpleApplication() {
     {
@@ -67,10 +70,12 @@ class DungeonCrawler(): SimpleApplication() {
 
         fun initKeyBindings() {
             mapOf(
-                    CameraAction.MOVE_UP.id.to(KeyInput.KEY_UP),
-                    CameraAction.MOVE_LEFT.id.to(KeyInput.KEY_LEFT),
-                    CameraAction.MOVE_DOWN.id.to(KeyInput.KEY_DOWN),
-                    CameraAction.MOVE_RIGHT.id.to(KeyInput.KEY_RIGHT)
+                CameraAction.MOVE_UP.id.to(KeyInput.KEY_UP),
+                CameraAction.MOVE_LEFT.id.to(KeyInput.KEY_LEFT),
+                CameraAction.MOVE_DOWN.id.to(KeyInput.KEY_DOWN),
+                CameraAction.MOVE_RIGHT.id.to(KeyInput.KEY_RIGHT),
+                PlayerAction.STOP.id.to(KeyInput.KEY_S),
+                PlayerAction.MOVE_MOUSE_LOCATION.id.to(KeyInput.KEY_A)
             ).iterator().forEach {
                 val id = it.key
                 val binding = it.value
@@ -79,7 +84,19 @@ class DungeonCrawler(): SimpleApplication() {
             }
         }
 
+        fun initMouseBindings() {
+            mapOf(
+                PlayerAction.MOVE_MOUSE_LOCATION.id.to(MouseInput.BUTTON_RIGHT)
+            ).iterator().forEach {
+                val id = it.key
+                val binding = it.value
+
+                getInputManager()!!.addMapping(id, MouseButtonTrigger(binding))
+            }
+        }
+
         attachAppStates()
         initKeyBindings()
+//        initMouseBindings()
     }
 }

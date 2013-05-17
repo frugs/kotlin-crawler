@@ -1,19 +1,14 @@
 package com.frugs.event.player
 
-import com.jme3.material.Material
 import com.frugs.dungeoncrawler.game.Player
-import com.jme3.math.ColorRGBA
 import org.junit.Before
 import com.jme3.math.Vector3f
 import com.jme3.math.FastMath
 import org.junit.Test
+import com.frugs.dungeoncrawler.util.MockMaterial
 
 class PlayerTest {
     private val tpf = 1.0.toFloat()
-
-    inner class MockMaterial: Material() {
-        override public fun setColor(name: String?, value: ColorRGBA?) {}
-    }
 
     private val mat = MockMaterial()
     val player = Player(mat)
@@ -70,6 +65,13 @@ class PlayerTest {
         player.rotateTowardsDestination(verySmallAngle, tpf)
         assertRotatedAntiClockwise()
     }
+
+    Test fun rotateTowardsDirection_shouldRotate_givenPi() {
+        val pi = player.getLocalTranslation()!!.add(Vector3f.UNIT_Z.negate())!!
+        player.rotateTowardsDestination(pi, tpf)
+        assert(player.facingDirection.x != 0.toFloat(), "Player did not rotate.")
+    }
+
 
  fun assertRotatedClockwise() {
         assert(player.facingDirection.x < 0, "Player did not rotate clockwise; rotated anti-clockwise to $player.facingDirection")

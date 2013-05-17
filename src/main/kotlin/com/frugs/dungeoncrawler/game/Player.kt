@@ -13,8 +13,12 @@ import com.frugs.dungeoncrawler.util.Radians
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.write
 import kotlin.concurrent.read
+import com.google.inject.Inject
+import com.google.inject.name.Named
+import com.google.inject.Singleton
 
-class Player(mat: Material): Node("player") {
+[Singleton]
+class Player [Inject] ([Named("unshaded")] mat: Material): Node("player") {
     {
         val dome = createDome(mat)
         attachChild(dome)
@@ -38,6 +42,10 @@ class Player(mat: Material): Node("player") {
     public override fun rotate(rot: Quaternion?): Spatial? = lock.write <Spatial?> {
         facingDirection = rot!!.toRotationMatrix()!!.mult(facingDirection)!!
         super.rotate(rot)
+    }
+
+    public override fun rotate(xAngle: Float, yAngle: Float, zAngle: Float): Spatial? = lock.write <Spatial?> {
+        rotate(Quaternion.ZERO.fromAngles(xAngle, yAngle, zAngle))
     }
 
     public override fun move(offset: Vector3f?): Spatial? = lock.write <Spatial?> { super.move(offset) }

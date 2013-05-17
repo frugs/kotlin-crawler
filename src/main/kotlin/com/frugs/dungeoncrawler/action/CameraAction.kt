@@ -9,6 +9,6 @@ class CameraAction(val id: String) {
 
         public val ids: Array<String?> = array<String?>(MOVE_LEFT.id, MOVE_RIGHT.id, MOVE_DOWN.id, MOVE_UP.id)
         public fun values(): List<CameraAction> = array(MOVE_LEFT, MOVE_RIGHT, MOVE_DOWN, MOVE_UP).toList()
-        public fun valueOf(id: String): CameraAction? = values().find { it.id == id }
+        public fun valueOf(id: String?): CameraAction? = values().find { it.id == id }
     }
 }

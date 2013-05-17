@@ -8,12 +8,15 @@ import com.google.inject.Inject
 import com.jme3.app.state.AppStateManager
 import com.jme3.app.Application
 import com.frugs.dungeoncrawler.DungeonCrawler
+import com.frugs.dungeoncrawler.control.PlayerControl
+import com.frugs.dungeoncrawler.action.PlayerAction
 
 class InGame [Inject] (
     val rootNode: Node,
-    val inputManager: InputManager
+    val inputManager: InputManager,
+    val player: Player,
+    val playerControl: PlayerControl
 ): AbstractAppState() {
-    var player: Player? = null
 
     var enabled: Boolean = false
         get() = $enabled
@@ -21,20 +24,15 @@ class InGame [Inject] (
             $enabled = state
             if (state) {
                 rootNode.attachChild(player)
-//                inputManager.addListener(playerControl, PlayerAction.ids)
+                inputManager.addListener(playerControl, *PlayerAction.ids)
             } else if (initialized) {
                 rootNode.detachChild(player)
-//                inputManager.removeListener(playerControl)
+                inputManager.removeListener(playerControl)
             }
         }
 
-//    var playerControl: PlayerControl? = null
-
     override public fun initialize(stateManager: AppStateManager?, app: Application?) {
         super.initialize(stateManager, app)
-        val simpleApp = app as DungeonCrawler
-        player = Player(simpleApp.materials.get("unshaded")!!)
-//        playerControl = PlayerControl(player, simpleApp.eventManager, simpleApp.camera, inputManager)
     }
 
     override public fun isEnabled(): Boolean = enabled
