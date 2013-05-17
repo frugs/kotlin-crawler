@@ -18,7 +18,7 @@ import com.google.inject.name.Named
 import com.google.inject.Singleton
 
 [Singleton]
-class Player [Inject] ([Named("unshaded")] mat: Material): Node("player") {
+class Player [Inject] ([Named("unshaded")] mat: Material): Node("player"), ReadWriteLocked, MovingSpatial {
     {
         val dome = createDome(mat)
         attachChild(dome)
@@ -34,24 +34,24 @@ class Player [Inject] ([Named("unshaded")] mat: Material): Node("player") {
             $facingDirection = direction
         } finally { lock.writeLock().unlock() }
 
-    var speed: Float = 8.0
-    var angularSpeed: Float = (FastMath.DEG_TO_RAD * 10.0 * 60.0).toFloat()
+    override var speed: Float = 8.0
+    override var angularSpeed: Float = (FastMath.DEG_TO_RAD * 10.0 * 60.0).toFloat()
 
-    val lock = ReentrantReadWriteLock()
+    override val lock = ReentrantReadWriteLock()
 
     public override fun rotate(rot: Quaternion?): Spatial? = lock.write <Spatial?> {
         facingDirection = rot!!.toRotationMatrix()!!.mult(facingDirection)!!
-        super.rotate(rot)
+        super<Node>.rotate(rot)
     }
 
     public override fun rotate(xAngle: Float, yAngle: Float, zAngle: Float): Spatial? = lock.write <Spatial?> {
         rotate(Quaternion.ZERO.fromAngles(xAngle, yAngle, zAngle))
     }
 
-    public override fun move(offset: Vector3f?): Spatial? = lock.write <Spatial?> { super.move(offset) }
-    public override fun getLocalTranslation(): Vector3f? = lock.read <Vector3f?> { super.getLocalTranslation() }
+    public override fun move(offset: Vector3f?): Spatial? = lock.write <Spatial?> { super<Node>.move(offset) }
+    public override fun getLocalTranslation(): Vector3f? = lock.read <Vector3f?> { super<Node>.getLocalTranslation() }
     public override fun setLocalTranslation(localTranslation: Vector3f?): Unit {
-        lock.write { super.setLocalTranslation(localTranslation) }
+        lock.write { super<Node>.setLocalTranslation(localTranslation) }
     }
 
     //return value is true if we've got more to go
