@@ -16,15 +16,17 @@ import kotlin.concurrent.read
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import com.google.inject.Singleton
+import com.frugs.dungeoncrawler.game.abilities.MoveTowardsAbility
+import com.frugs.dungeoncrawler.game.abilities.RotateTowardsAbility
 
 [Singleton]
-class Player [Inject] ([Named("unshaded")] mat: Material): Node("player"), ReadWriteLocked, MovingSpatial {
+class Player [Inject] ([Named("unshaded")] mat: Material): Node("player"), MoveTowardsAbility, RotateTowardsAbility {
     {
         val dome = createDome(mat)
         attachChild(dome)
     }
 
-    public var facingDirection: Vector3f = Vector3f.UNIT_Z
+    override public var facingDirection: Vector3f = Vector3f.UNIT_Z
         get() =  try {
             lock.readLock().lock()
             $facingDirection
@@ -52,33 +54,6 @@ class Player [Inject] ([Named("unshaded")] mat: Material): Node("player"), ReadW
     public override fun getLocalTranslation(): Vector3f? = lock.read <Vector3f?> { super<Node>.getLocalTranslation() }
     public override fun setLocalTranslation(localTranslation: Vector3f?): Unit {
         lock.write { super<Node>.setLocalTranslation(localTranslation) }
-    }
-
-    //return value is true if we've got more to go
-    public fun moveTowardsDestination(destination: Vector3f, tpf: Float): Boolean = lock.write <Boolean> {
-        val remainingTravel = destination.subtract(getLocalTranslation())!!
-        val displacement = remainingTravel.normalize()!!.mult(speed)!!.mult(tpf)!!
-
-        if (remainingTravel.length() == 0.0.toFloat()) false
-        else {
-            val stillMoving = displacement.length() < remainingTravel.length()
-            if (stillMoving) move(displacement) else move(remainingTravel)
-            stillMoving
-        }
-    }
-
-    //return value is true if we've got more to rotate
-    public fun rotateTowardsDestination(destination: Vector3f, tpf: Float): Boolean = lock.write <Boolean> {
-        val destinationDirection = destination.subtract(getLocalTranslation())!!.normalize()
-        val modCrossProduct = FastMath.asin(facingDirection.cross(destinationDirection)!!.y)
-        val angleToDestination = if (modCrossProduct != 0.toFloat() || facingDirection == destinationDirection) modCrossProduct
-            else FastMath.PI
-
-        val angularVelocity = angularSpeed * tpf * FastMath.sign(angleToDestination)
-        val rotation = Radians.smallerAbsolute(angularVelocity, angleToDestination)
-
-        rotate(0.0, rotation, 0.0)
-        rotation != modCrossProduct
     }
 
     private fun createDome(mat: Material): Geometry {

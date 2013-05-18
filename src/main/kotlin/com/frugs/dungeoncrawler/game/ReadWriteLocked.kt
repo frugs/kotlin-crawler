@@ -4,5 +4,5 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 
 
 trait ReadWriteLocked {
-    protected val lock: ReentrantReadWriteLock
+    val lock: ReentrantReadWriteLock
 }
