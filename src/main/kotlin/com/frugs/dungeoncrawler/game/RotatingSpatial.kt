@@ -4,7 +4,7 @@ import com.jme3.math.Vector3f
 import com.jme3.scene.Spatial
 
 trait RotatingSpatial {
-    var angularSpeed: Float
+    val angularSpeed: Float
     var facingDirection: Vector3f
 
     fun getLocalTranslation(): Vector3f?

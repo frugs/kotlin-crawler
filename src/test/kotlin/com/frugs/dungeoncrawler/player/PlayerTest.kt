@@ -14,7 +14,6 @@ class PlayerTest {
     val player = Player(mat)
 
     Before fun setUp() {
-        player.angularSpeed = FastMath.HALF_PI
         player.setLocalTranslation(Vector3f.UNIT_XYZ)
     }
 

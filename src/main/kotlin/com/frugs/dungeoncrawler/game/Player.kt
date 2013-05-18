@@ -18,50 +18,24 @@ import com.google.inject.name.Named
 import com.google.inject.Singleton
 import com.frugs.dungeoncrawler.game.abilities.MoveTowardsAbility
 import com.frugs.dungeoncrawler.game.abilities.RotateTowardsAbility
+import com.frugs.dungeoncrawler.scene.ReadWriteLockedMovingRotatingNode
 
 [Singleton]
-class Player [Inject] ([Named("unshaded")] mat: Material): Node("player"), MoveTowardsAbility, RotateTowardsAbility {
+class Player [Inject] ([Named("unshaded")] mat: Material): ReadWriteLockedMovingRotatingNode("player"), MoveTowardsAbility, RotateTowardsAbility {
     {
+        fun createDome(mat: Material): Geometry {
+            val dome = Geometry("Dome", Dome(Vector3f.ZERO, 2, 4, 1.5, true))
+            dome.rotate(FastMath.HALF_PI, 0.0, 0.0)
+            mat.setColor("Color", ColorRGBA.Blue)
+            dome.setMaterial(mat)
+            return dome
+        }
+
         val dome = createDome(mat)
         attachChild(dome)
+        facingDirection = Vector3f.UNIT_Z
     }
 
-    override public var facingDirection: Vector3f = Vector3f.UNIT_Z
-        get() =  try {
-            lock.readLock().lock()
-            $facingDirection
-        } finally { lock.readLock().unlock() }
-        private set(direction: Vector3f) = try {
-            lock.writeLock().lock()
-            $facingDirection = direction
-        } finally { lock.writeLock().unlock() }
-
-    override var speed: Float = 8.0
-    override var angularSpeed: Float = (FastMath.DEG_TO_RAD * 10.0 * 60.0).toFloat()
-
-    override val lock = ReentrantReadWriteLock()
-
-    public override fun rotate(rot: Quaternion?): Spatial? = lock.write <Spatial?> {
-        facingDirection = rot!!.toRotationMatrix()!!.mult(facingDirection)!!
-        super<Node>.rotate(rot)
-    }
-
-    public override fun rotate(xAngle: Float, yAngle: Float, zAngle: Float): Spatial? = lock.write <Spatial?> {
-        rotate(Quaternion.ZERO.fromAngles(xAngle, yAngle, zAngle))
-    }
-
-    public override fun move(offset: Vector3f?): Spatial? = lock.write <Spatial?> { super<Node>.move(offset) }
-    public override fun getLocalTranslation(): Vector3f? = lock.read <Vector3f?> { super<Node>.getLocalTranslation() }
-    public override fun setLocalTranslation(localTranslation: Vector3f?): Unit {
-        lock.write { super<Node>.setLocalTranslation(localTranslation) }
-    }
-
-    private fun createDome(mat: Material): Geometry {
-        val dome = Geometry("Dome", Dome(Vector3f.ZERO, 2, 4, 1.5, true))
-        dome.rotate(FastMath.HALF_PI, 0.0, 0.0)
-        mat.setColor("Color", ColorRGBA.Blue)
-        //material = mat
-        dome.setMaterial(mat)
-        return dome
-    }
+    override val speed: Float = 8.0
+    override val angularSpeed: Float = (FastMath.DEG_TO_RAD * 10.0 * 60.0).toFloat()
 }
