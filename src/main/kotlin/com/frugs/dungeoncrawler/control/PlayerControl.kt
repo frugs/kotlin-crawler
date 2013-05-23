@@ -17,7 +17,6 @@ import com.google.inject.Inject
 
 class PlayerControl [Inject] (
     val player: Player,
-    val eventManager: EventManager,
     val cam: Camera,
     val inputManager: InputManager
 ) : AnalogListener {
@@ -26,8 +25,8 @@ class PlayerControl [Inject] (
         val action = PlayerAction.valueOf(p0)
 
         when (action) {
-            MOVE_MOUSE_LOCATION -> eventManager.queueEvent(PlayerMove(currentMouseFloorLocation(), player, true))
-            STOP -> eventManager.queueEvent(PlayerStop())
+            MOVE_MOUSE_LOCATION -> EventManager.queueEvent(PlayerMove(currentMouseFloorLocation(), player, true))
+            STOP -> EventManager.queueEvent(PlayerStop())
             else -> throw UnsupportedOperationException("Cannot process non-player action: '${p0}'")
         }
     }

@@ -9,9 +9,7 @@ import com.frugs.dungeoncrawler.util.MockMaterial
 
 class PlayerTest {
     private val tpf = 1.0.toFloat()
-
-    private val mat = MockMaterial()
-    val player = Player(mat)
+    private val player = Player(MockMaterial)
 
     Before fun setUp() {
         player.setLocalTranslation(Vector3f.UNIT_XYZ)
@@ -65,10 +63,12 @@ class PlayerTest {
         assertRotatedAntiClockwise()
     }
 
-    Test fun rotateTowardsDirection_shouldRotate_givenPi() {
-        val pi = player.getLocalTranslation()!!.add(Vector3f.UNIT_Z.negate())!!
-        player.rotateTowardsDestination(pi, tpf)
-        assert(player.facingDirection.x != 0.toFloat(), "Player did not rotate.")
+    Test fun rotateTowardsDirection_shouldRotate_givenPiishAngles() {
+        (-100..100).forEach {
+            val angle = player.getLocalTranslation()!!.add(Vector3f.UNIT_Z.negate())!!.add(Vector3f.UNIT_X.mult(it * 0.01.toFloat()))!!
+            player.rotateTowardsDestination(angle, tpf)
+            assert(player.facingDirection.x != 0.toFloat(), "Player did not rotate.")
+        }
     }
 
  fun assertRotatedClockwise() {

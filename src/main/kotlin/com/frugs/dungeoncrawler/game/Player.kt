@@ -9,7 +9,6 @@ import com.jme3.scene.shape.Dome
 import com.jme3.math.ColorRGBA
 import com.jme3.math.Quaternion
 import com.jme3.scene.Spatial
-import com.frugs.dungeoncrawler.util.Radians
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.write
 import kotlin.concurrent.read

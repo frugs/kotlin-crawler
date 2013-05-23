@@ -59,13 +59,12 @@ class DungeonCrawler(): SimpleApplication() {
             val mainMenuController = injector.getInstance(javaClass<MainMenuController>())
             val inGame = injector.getInstance(javaClass<InGame>())
             val rtsCamera = injector.getInstance(javaClass<RtsCamera>())
-            val eventManager = injector.getInstance(javaClass<EventManager>())
 
             stateManager.detach(getStateManager()?.getState(javaClass<FlyCamAppState>()))
             stateManager.attach(mainMenuController)
             stateManager.attach(inGame)
             stateManager.attach(rtsCamera)
-            stateManager.attach(eventManager)
+            stateManager.attach(EventManager)
         }
 
         fun initKeyBindings() {

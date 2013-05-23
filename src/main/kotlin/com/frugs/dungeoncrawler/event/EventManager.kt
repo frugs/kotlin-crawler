@@ -6,44 +6,42 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import com.google.inject.Singleton
 
-[Singleton]
-class EventManager : AbstractAppState() {
+class EventManager {
+    class object : AbstractAppState() {
+        private val executor: ExecutorService = Executors.newCachedThreadPool()
 
-    private val executor: ExecutorService = Executors.newCachedThreadPool()
+        private var nextEvents: MutableList<Event> = linkedListOf()
+        private var eventQueue: MutableList<Event> = linkedListOf()
 
-    private var nextEvents: MutableList<Event> = linkedListOf()
-    private var eventQueue: MutableList<Event> = linkedListOf()
+        public var enabled: Boolean = false
+            get() = $enabled
+            set(state: Boolean) { $enabled = state }
 
-    public var enabled: Boolean = false
-        get() = $enabled
-        set(state: Boolean) { $enabled = state }
+        public fun queueEvent(event: Event) { synchronized <Unit>(this) { nextEvents.add(event) } }
 
-    public fun queueEvent(event: Event) { synchronized <Unit>(this) { nextEvents.add(event) } }
+        override public fun update(tpf: Float) {
+            fun processQueue() {
+                val runners = eventQueue.map { event -> EventRunner(tpf, event) }
+                executor.invokeAll(runners)
+            }
 
-    override public fun update(tpf: Float) {
-        fun processQueue() {
-            val runners = eventQueue.map { event -> EventRunner(this, tpf, event) }
-            executor.invokeAll(runners)
+            performInterrupts()
+            processQueue()
+            loadNextEvents()
         }
 
-        super.update(tpf)
-
-        performInterrupts()
-        processQueue()
-        loadNextEvents()
-    }
-
-    private fun loadNextEvents() {
-        synchronized(this) {
-            eventQueue = nextEvents
-            nextEvents = linkedListOf()
+        private fun loadNextEvents() {
+            synchronized(this) {
+                eventQueue = nextEvents
+                nextEvents = linkedListOf()
+            }
         }
-    }
 
-    private fun performInterrupts() {
-        val interruptors: List<Interrupter> = eventQueue.filter { it is Interrupter }.map { it as Interrupter }
-        eventQueue.removeAll(eventQueue.filter { it is Interruptible && it.shouldBeInterrupted(interruptors) })
-    }
+        private fun performInterrupts() {
+            val interruptors: List<Interrupter> = eventQueue.filter { it is Interrupter }.map { it as Interrupter }
+            eventQueue.removeAll(eventQueue.filter { it is Interruptible && it.shouldBeInterrupted(interruptors) })
+        }
 
-    override public fun isEnabled() = enabled
+        override public fun isEnabled() = enabled
+    }
 }

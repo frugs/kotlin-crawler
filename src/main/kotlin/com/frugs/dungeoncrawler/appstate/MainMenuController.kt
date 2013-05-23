@@ -41,7 +41,7 @@ class MainMenuController [Inject] (
     fun startGame() {
         stateManager.getState(javaClass<InGame>())!!.enabled = true
         stateManager.getState(javaClass<RtsCamera>())!!.enabled = true
-        stateManager.getState(javaClass<EventManager>())!!.enabled = true
+        EventManager.enabled = true
         enabled = false
     }
 
